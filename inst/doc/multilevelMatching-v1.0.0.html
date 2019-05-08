@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Shu Yang and Brian G. Barkley" />
+
+<meta name="date" content="2019-05-06" />
+
+<title>multilevelMatching-v1.0.0</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">multilevelMatching-v1.0.0</h1>
+<h4 class="author"><em>Shu Yang and Brian G. Barkley</em></h4>
+<h4 class="date"><em>2019-05-06</em></h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#description">Description</a><ul>
+<li><a href="#matching-with-3-or-more-levels-of-treatment">Matching with 3 or more levels of treatment</a></li>
+</ul></li>
+<li><a href="#tutorial">Tutorial</a><ul>
+<li><a href="#example-dataset">Example dataset</a></li>
+<li><a href="#restructure-the-data">Restructure the data</a><ul>
+<li><a href="#using-identifiers-for-the-observations">Using identifiers for the observations</a></li>
+</ul></li>
+<li><a href="#matching-on-covariates">Matching on covariates</a><ul>
+<li><a href="#using-multilevelmatchx">Using <code>multilevelMatchX()</code></a></li>
+<li><a href="#using-multimatch">Using <code>multiMatch()</code></a></li>
+</ul></li>
+<li><a href="#matching-on-the-estimated-generalized-propensity-score-gps">Matching on the Estimated Generalized Propensity Score (GPS)</a><ul>
+<li><a href="#using-multilevelgpsmatch">Using <code>multilevelGPSMatch()</code></a></li>
+<li><a href="#using-multimatch-1">Using <code>multiMatch()</code></a></li>
+<li><a href="#example-ordinal-logistic-regression">Example: ordinal logistic regression</a></li>
+<li><a href="#example-multiple-matches-per-observation">Example: multiple matches per observation</a></li>
+</ul></li>
+<li><a href="#matching-on-user-supplied-existing-gps">Matching on User-supplied (“existing”) GPS</a></li>
+<li><a href="#stratification-on-the-gps">Stratification on the GPS</a></li>
+</ul></li>
+<li><a href="#news">News</a><ul>
+<li><a href="#a-note-on-multimatch">A note on <code>multiMatch()</code></a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="description" class="section level1">
+<h1>Description</h1>
+<p>Main Paper: <a href="https://doi.org/10.1111/biom.12505">Yang et al. (2016)</a>:</p>
+<ul>
+<li>Yang, S., Imbens G. W., Cui, Z., Faries, D. E., &amp; Kadziola, Z. (2016) Propensity Score Matching and Subclassification in Observational Studies with Multi-Level Treatments. <em>Biometrics</em>, 72, 1055-1065. <a href="https://doi.org/10.1111/biom.12505" class="uri">https://doi.org/10.1111/biom.12505</a></li>
+</ul>
+<p>Visit the <a href="https://shuyang1987.github.io/multilevelMatching/">package website</a></p>
+<div id="matching-with-3-or-more-levels-of-treatment" class="section level2">
+<h2>Matching with 3 or more levels of treatment</h2>
+<p>In setting with where 3 or more levels of treatment (i.e., multilevel treatment), our goal is to estimate pairwise average treatment effects from a common population using matching methods.</p>
+<p>This goal can not be acheived by matching one treatment with another one at a time, since the pairwise matched samples may differ from the target population systematically, and thus they are not compatitable. One implication is that from this approach, it is possible that treatment A is better than treatment B, treatment B is better than treatment C, and treatment C is better than treatment A.</p>
+<p>We focus on estimating the average values of potential outcomes for each treatment level by matching methods, which facilitate estimation of pairwise average treatment effects for a common population.</p>
+<p>The estimation methods include generalized propensity score (GPS) matching, GPS stratification, matching with the full set of covariates, matching with the full set of GPS vector. Note that GPS matching and GPS straticication only require matching on a scalar function when estimating the average value of the potential outcome at a particular treatment level, which reduces the matching dimension to one, regardless of the number of covariates and the number of treatment levels.</p>
+<p>In order to ensure sufficient overlap, <a href="https://doi.org/10.1093/biomet/asn055">Crump et al. (2009)</a>’s trimming method can be extended to this setting as well.</p>
+</div>
+</div>
+<div id="tutorial" class="section level1">
+<h1>Tutorial</h1>
+<ul>
+<li>To estimate by stratifying on the estimating propensity score, use <code>multilevelGPSStratification()</code>.</li>
+<li>The functions implementing matching methods are shown here:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>S3 Class?</th>
+<th></th>
+<th>Covariate Matching Function</th>
+<th>Propensity Score Matching Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>no</td>
+<td></td>
+<td><code>multilevelMatchX()</code></td>
+<td><code>multilevelGPSMatch()</code></td>
+</tr>
+<tr class="even">
+<td>Yes!</td>
+<td></td>
+<td><code>multiMatch()</code></td>
+<td><code>multiMatch()</code></td>
+</tr>
+</tbody>
+</table>
+<p>As of version 1.0.0, the combination of <code>multilevelMatchX()</code> and <code>multilevelGPSMatch()</code> can carry out the same estimation as <code>multiMatch()</code>. The <code>multiMatch()</code> function was added to standardize some of the inputs, include more tests and checks, and provides more verbose output with S3 class <code>&quot;multiMatch&quot;</code>. We receommend using <code>multiMatch()</code> for these and other reasons.</p>
+<div id="example-dataset" class="section level2">
+<h2>Example dataset</h2>
+<p>We will use the dataset provided with this package</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(multilevelMatching)
+simulated_data &lt;-<span class="st"> </span>multilevelMatching<span class="op">::</span>simulated_data
+knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(simulated_data), <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">outcome</th>
+<th align="right">treatment</th>
+<th align="right">covar1</th>
+<th align="right">covar2</th>
+<th align="right">covar3</th>
+<th align="right">covar4</th>
+<th align="right">covar5</th>
+<th align="right">covar6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">-5.13</td>
+<td align="right">1</td>
+<td align="right">-0.87</td>
+<td align="right">0.24</td>
+<td align="right">0.23</td>
+<td align="right">-2.89</td>
+<td align="right">0.21</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">-3.03</td>
+<td align="right">1</td>
+<td align="right">0.27</td>
+<td align="right">-0.35</td>
+<td align="right">-0.40</td>
+<td align="right">-2.21</td>
+<td align="right">0.07</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">3.05</td>
+<td align="right">1</td>
+<td align="right">1.42</td>
+<td align="right">1.32</td>
+<td align="right">-1.20</td>
+<td align="right">0.06</td>
+<td align="right">1.26</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">-6.09</td>
+<td align="right">1</td>
+<td align="right">-1.39</td>
+<td align="right">-1.07</td>
+<td align="right">1.12</td>
+<td align="right">-2.36</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">-2.46</td>
+<td align="right">1</td>
+<td align="right">-1.15</td>
+<td align="right">0.95</td>
+<td align="right">0.51</td>
+<td align="right">-2.68</td>
+<td align="right">0.07</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">-0.32</td>
+<td align="right">1</td>
+<td align="right">0.27</td>
+<td align="right">0.42</td>
+<td align="right">-0.45</td>
+<td align="right">2.43</td>
+<td align="right">0.60</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">boxplot</span>(
+  outcome <span class="op">~</span><span class="st"> </span>treatment, 
+  <span class="dt">data =</span> simulated_data,
+  <span class="dt">xlab =</span> <span class="st">&quot;treatment level&quot;</span>,
+  <span class="dt">ylab =</span> <span class="st">&quot;outcome&quot;</span>,
+  <span class="dt">main =</span> <span class="st">&quot;Outcomes by treatment level&quot;</span>
+)</code></pre></div>
+<p><img src="data:image/png;base64,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DXkvgKFy5cqFvv7667SUPxmZJKK395Ib/v+67rrrkpF9UmQMGDAgrNeOHTuSIhMhsQmUSpOdJ5ssJvDvf//b+vfvb/6bb+fOna1jx45WokQJmz17tr3xxhumN/ezzjrL3nvvPTvyyCOLXJpjjjnG3XvIIYcUWQY3Jo9ANtXHPffcY7feemvyCpcmSUHVO014yKYQAnRBFwInFy5t377dvLffsPF95JFHbObMmXb99deb94ZuM2bMsCeffNKhkIG+9NJLw2lTxWfnzp2m7nB9xwpKo66/eNL6slauXGnbtm3zT923965qK1asiCln06ZN9v333+e5N78TrxVhy5cvt++++85+++23/JLEHbdq1SrzWllxp09FQnUJb968eTfR4qa6ilVG1c8PP/xgX3zxhXuZ201QghG///67kxd9m+rnp59+io7Ocx6vzpE3Se7q1asjo1J2HO8zlogCqZCZSP6kLYBA7EYyKYozgU8//TTc9XT88ccXWFSvVRxO9+abb7p0n332WahixYru88ADD+S596STTnLxhx56qIv/6KOP3Ln3GDo5pUqVcucPP/xw+D7PkIZOPvnkUNmyZV2aqlWrhs4888x8u75ff/11l9bvNtc96r798ssvw/J0cNRRR7l8vBeH0IQJE0J169Z1stXNedFFF4U8wxB69NFHQ/vuu6+Lr1KlSmjo0KF5ZOjk3XffDR1++OEhr1fApdtnn31Cl19+eeiPP/7Ik3bNmjWhP//5zyGVzy+r7pFunoHPkza/k8guaO/lJ7T//vs7OXvttVfo2GOPDX3zzTfuNm8M3ZVL/P/617/mEaUu0WrVqrnrZ599dp5r/kms+vD8ANz9p59+esgbHwyVLFkyVLp06ZDXQnUiVG5x8vlLv+bNmztOfh7+98033xwSL5+Hvhs0aBCaNWuWnyR0xhlnOPl+mvLly4dq1arlrr/yyivhsi5atCh06qmnhtMeeOCBoQ8++CDkvaSEOnXq5PQU76ZNm4bEKDLEq/PAgQNdfu3btw8tWbIk5PX4hFQ+6XbAAQeEVC9+KExvP03kt/eyEuYQ3QUd6xn7+OOPwxw8v4xIsSHvhTLk+W246127dg1fiyXTT0gXtE8ivd+W3uzILdsIaOzX/9HzWroFqqdrfjoZLAX9wPlxd999d557jzvuOHdNP1gK+pH000Z+33fffe66fphk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zTffpKUAgwcPtueeey4tecXKJN1lj6UP1yEQRAIY4CDWGjpnBYFQKGT6pCvs2rXLtSjTlV9h+aS77IXpwjUIBJUABjioNYfeGSXw22+/Wbt27ZwON954o/Xr188dd+jQwV599VXXMm7UqJG9/vrrLn7RokV20kknWbVq1eyggw6ya665xrZv356nDC+++KLpfqWpVauWdevWzZYsWeLSDBkyxN5++23X3d2mTRtbvXq1vffee06HxYsX24knnujuUx5Lly61+fPnW8eOHZ2cv/zlL7Zy5co8eY0ePdpatmxplStXtiOPPNLp7CeQXMV9/fXX1rVrV9tnn32sefPmJv0UCiq7f39h34Xle+2119qf/vSn3W4fOHCgjRgxIhxfmIxwIg4gEAACGOAAVBIqZh+BMmXKmIyigoyebzg++eQTu+SSS0zXDzvsMKtTp44zokcddZT9/PPPdt9999nw4cNt1KhRYaMtGRMnTrQzzzzTGToZGMl8yaVrAAAGdElEQVRYsGCBi9P10047zRo2bGgNGjSwyy+/3KpUqWKbNm2yDz/80E4++WRn8GXAPv30Uzv99NOtd+/e1rZtW7vuuuts7Nix9uijj0qMC3fffbddfPHF1rRpU/vXv/7ljL7kT5o0yV2X3I8++sjJlf7333+/VahQwc466yz77rvvXNnyK/t/xRf4FStfvRCoi33ZsmVhGWvXrnXj3i1atHBxsWSEb+QAAkEg4HUlESAAgSIQ2LZtm/qfQ2PGjAnf7RmqUKtWrUI7d+4Mx51xxhmh6tWrh/74449wnGdw3b1eS9XF/d///V+oV69e4es6uO2221waz3C7eM9Ihrp37x5OM23aNHd95MiR4Tivpeji7rjjjnDcsGHDQocffrg7lyzPeIfOP//88HUdnHPOOaHGjRu7OF/uXXfdFU7z/fffO7lPPvmki8uv7OHE/z14+eWX3T1eaz0UT76///57aO+99w7deeedYVGPPPJIqFKlSqEtW7bEJUM3ei8/oYceeigsgwMIZCuBUkF4SUBHCASJgLqR99rrf51Ls2fPtmOOOcZ1C/vl8AyNS/P++++bZ7Bdy9i/9sMPP5i6lT///HMXpS5fdQMXFI499tjwJc/QumPPUIfj1Ir1HcXUqlYLV13K7777bjiNusXV+ly3bl047vjjjw8f16tXz8qVK+fuDUcmcBBPvjVq1HAt/ueff96uuuoqJ106qUWvFvgHH3wQU3fJIEAgKAQwwEGpKfQMDIH69euHdZXx1PQhjQvrEx387tb169e7rmmv1ei6qmU0ZfQUvLf36NvynNetWzd87hv+Aw44IBxXsmTJ8PHy5cvd8dChQ8NxkQe+Porbd999Iy+5rmc5ghUlxJOvjOd5551nzzzzjOvq1nQiTfFS17pCvDKKoh/3QCATBP73mp6J3MkTAsWQQKTBK1++vOnjdQObjFf0x+vmdQT69u1rU6ZMMa/71Tk/rVq1yi677DJ3LZYBjswvFk45eCmo5R2ti841buwHzeFNVog3XzmO6cVDY+IvvPCC1axZ07p06eLUiFdGsnRGDgRSTQADnGrCyC+2BPzWpjfeW2AZZcTk7KRuVQWd6/PVV19Z586dnSezN55qM2fONHkrDxo0yLyxWJf2448/dt++fN3nH7sLRfgjxzDJUdeur4u+n3jiCee45Y1TxyU1nrJHCoo3X8nt06eP6y2Q17Wc2/wXjHhlRObLMQSymQAGOJtrB92ymoAMg8ZFZ8yYYVoVqqCgLlTPick8xyc3ritP6QsuuMCNt6rFKY9pTWlSC1jdrBqjlZe054DkRKobW0FThjQ2PH36dPOcklxcon/kSe05XLlu3nvuucfkZaxu7yuvvNK9KKg88YR4y+7LSiRfdUNrKpTGqNUz4IdEZPj38A2BrCaQrd5h6AWBIBCQ93KpUqVC3vilU1de0N5Uo91Uf+qpp0JeF6rzCva6pEM9evQIeVN9wulmzZoV8oxxyGuNOnmeI1fIG/8MeYYu7GXttZKdB7P3gxJ66623Qr63sjfvNyxn3LhxLo9ffvklHPfAAw+ElKcfdG3AgAEuH8mqXbt2yGt5hzxD75LkJ1cX5D0d6aEcXXZfvv8d6QWtuFj5+vfp+4gjjgg1adIkMsodxyMDL+jdsBGRpQRKSK+sfkNAOQhkOQFv+owbT61YsWJMTVesWGFyNtK4cH5B6ybL41fzfPML+nfVfGJ/PDS/NPHGqetbY80NvLnF6oYuSkik7L78ZOSbDBm+PnxDIFMEMMCZIk++EIAABCCQ0wQYA87p6qfwEIAABCCQKQIY4EyRJ18IQAACEMhpAhjgnK5+Cg8BCEAAApkigAHOFHnyhQAEIACBnCaAAc7p6qfwEIAABCCQKQIY4EyRJ18IQAACEMhpAhjgnK5+Cg8BCEAAApkigAHOFHnyhQAEIACBnCaAAc7p6qfwEIAABCCQKQIY4EyRJ18IQAACEMhpAhjgnK5+Cg8BCEAAApkigAHOFHnyhQAEIACBnCaAAc7p6qfwEIAABCCQKQIY4EyRJ18IQAACEMhpAhjgnK5+Cg8BCEAAApkigAHOFHnyhQAEIACBnCaAAc7p6qfwEIAABCCQKQIY4EyRJ18IQAACEMhpAhjgnK5+Cg8BCEAAApkigAHOFHnyhQAEIACBnCaAAc7p6qfwEIAABCCQKQIY4EyRJ18IQAACEMhpAv8fRleeCb6sFNMAAAAASUVORK5CYII=" style="display: block; margin: auto;" /></p>
+</div>
+<div id="restructure-the-data" class="section level2">
+<h2>Restructure the data</h2>
+<p>As of version 1.0.0, this package does not support the use of formulas-and-dataframes for specifying the variables. Note that using a factor variable for the treatment vector should be avoided, also. We restructure the data in this manner:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outcome &lt;-<span class="st"> </span>simulated_data<span class="op">$</span>outcome
+treatment &lt;-<span class="st"> </span>simulated_data<span class="op">$</span>treatment
+covar_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(
+  simulated_data[ ,<span class="kw">names</span>(simulated_data) <span class="op">%in%</span><span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;covar&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>)]
+)</code></pre></div>
+<div id="using-identifiers-for-the-observations" class="section level3">
+<h3>Using identifiers for the observations</h3>
+<p>Naming the rows of the covariate matrix, or the entries of the outcome or treatment variables, with ID numbers for the observations provides nice functionality with inspecting output from <code>multiMatch()</code>. Here we create some unique ID’s:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">identifying_names &lt;-<span class="st"> </span><span class="kw">paste0</span>(
+  <span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>],<span class="dt">each =</span> <span class="dv">12</span>), 
+  <span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">25</span>], <span class="dv">12</span>)
+)
+(
+  <span class="kw">length</span>(identifying_names) <span class="op">==</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">length</span>(<span class="kw">unique</span>(identifying_names)) 
+) <span class="op">&amp;&amp;</span><span class="st"> </span>
+<span class="st">  </span>(
+    <span class="kw">length</span>(identifying_names) <span class="op">==</span><span class="st"> </span>
+<span class="st">      </span><span class="kw">NROW</span>(simulated_data)
+  )
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
+<p>Any of the following can be done:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># names(outcome) &lt;- identifying_names</span>
+<span class="kw">names</span>(treatment) &lt;-<span class="st"> </span>identifying_names
+<span class="co"># rownames(covar_matrix) &lt;- identifying_names</span></code></pre></div>
+</div>
+</div>
+<div id="matching-on-covariates" class="section level2">
+<h2>Matching on covariates</h2>
+<p>We present both manners of performing this matching</p>
+<div id="using-multilevelmatchx" class="section level3">
+<h3>Using <code>multilevelMatchX()</code></h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)
+fit1 &lt;-<span class="st"> </span><span class="kw">multilevelMatchX</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> covar_matrix
+)</code></pre></div>
+<p>which provides the following output:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit1
+<span class="co">#&gt; $tauestimate</span>
+<span class="co">#&gt; EY(2)-EY(1) EY(3)-EY(1) EY(3)-EY(2) </span>
+<span class="co">#&gt;  0.07927361  0.86264929  0.78337567 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $varestimate</span>
+<span class="co">#&gt; EY(2)-EY(1) EY(3)-EY(1) EY(3)-EY(2) </span>
+<span class="co">#&gt;   0.1792186   0.1634754   0.3221616</span></code></pre></div>
+</div>
+<div id="using-multimatch" class="section level3">
+<h3>Using <code>multiMatch()</code></h3>
+<p>For this example, <code>multiMatch()</code> requires only one additional argument, which is `match_on = “covariates”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)
+fit2 &lt;-<span class="st"> </span><span class="kw">multiMatch</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> covar_matrix,
+  <span class="dt">match_on =</span> <span class="st">&quot;covariates&quot;</span>
+)</code></pre></div>
+<p>which is an S3 object of class:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(fit2)
+<span class="co">#&gt; [1] &quot;multiMatch&quot;</span></code></pre></div>
+<p>The <code>print.multiMatch()</code> method looks similar to before:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(fit2)
+<span class="co">#&gt; -------------- Causal estimates ---------------</span>
+<span class="co">#&gt;         Param Trt1 Trt2   Estimate  Variance</span>
+<span class="co">#&gt; 1 EY(2)-EY(1)    1    2 0.07927361 0.1792186</span>
+<span class="co">#&gt; 2 EY(3)-EY(1)    1    3 0.86264929 0.1634754</span>
+<span class="co">#&gt; 3 EY(3)-EY(2)    2    3 0.78337567 0.3221616</span>
+<span class="co">#&gt; --- Matching on 'covariates' with M=1, J=1 ---</span></code></pre></div>
+<p>but there is a lot more information available now:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(fit2)
+<span class="co">#&gt; ------------- Method arguments --------------</span>
+<span class="co">#&gt; $match_on</span>
+<span class="co">#&gt; [1] &quot;covariates&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $model_options</span>
+<span class="co">#&gt; $model_options$reference_level</span>
+<span class="co">#&gt; aa </span>
+<span class="co">#&gt;  1 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $M_matches</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $J_var_matches</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $trt_levels</span>
+<span class="co">#&gt; [1] 1 2 3</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $N_per_trt</span>
+<span class="co">#&gt; W</span>
+<span class="co">#&gt;   1   2   3 </span>
+<span class="co">#&gt; 100 100 100 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ------------- Causal estimates --------------</span>
+<span class="co">#&gt;         Param Trt1 Trt2   Estimate  Variance</span>
+<span class="co">#&gt; 1 EY(2)-EY(1)    1    2 0.07927361 0.1792186</span>
+<span class="co">#&gt; 2 EY(3)-EY(1)    1    3 0.86264929 0.1634754</span>
+<span class="co">#&gt; 3 EY(3)-EY(2)    2    3 0.78337567 0.3221616</span>
+<span class="co">#&gt; ---------------------------------------------</span></code></pre></div>
+<p>and more output that may be useful for inspecting the method:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(fit2)
+<span class="co">#&gt; [1] &quot;results&quot;           &quot;analysis_idx&quot;      &quot;mu&quot;               </span>
+<span class="co">#&gt; [4] &quot;impute_mat&quot;        &quot;estimate_args&quot;     &quot;model&quot;            </span>
+<span class="co">#&gt; [7] &quot;propensity_scores&quot; &quot;impute_match_data&quot; &quot;impute_mat_sorted&quot;</span></code></pre></div>
+<p>For example, we can inspect the imputed potential outcomes of each observation:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(fit2<span class="op">$</span>impute_mat_sorted), <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">1</th>
+<th align="right">2</th>
+<th align="right">3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>aa</td>
+<td align="right">-5.13</td>
+<td align="right">-9.11</td>
+<td align="right">3.54</td>
+</tr>
+<tr class="even">
+<td>ab</td>
+<td align="right">-3.03</td>
+<td align="right">-3.81</td>
+<td align="right">2.00</td>
+</tr>
+<tr class="odd">
+<td>ac</td>
+<td align="right">3.05</td>
+<td align="right">3.63</td>
+<td align="right">4.66</td>
+</tr>
+<tr class="even">
+<td>ad</td>
+<td align="right">-6.09</td>
+<td align="right">-12.03</td>
+<td align="right">3.54</td>
+</tr>
+<tr class="odd">
+<td>ae</td>
+<td align="right">-2.46</td>
+<td align="right">-7.69</td>
+<td align="right">0.19</td>
+</tr>
+<tr class="even">
+<td>af</td>
+<td align="right">-0.32</td>
+<td align="right">8.09</td>
+<td align="right">-2.37</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="matching-on-the-estimated-generalized-propensity-score-gps" class="section level2">
+<h2>Matching on the Estimated Generalized Propensity Score (GPS)</h2>
+<div id="using-multilevelgpsmatch" class="section level3">
+<h3>Using <code>multilevelGPSMatch()</code></h3>
+<p>Propensity scores can be estimated with either of the following options</p>
+<ul>
+<li><code>GPSM=&quot;multinomiallogisticReg&quot;</code> for multinomial logistic regression from <code>nnet::multinom()</code></li>
+<li><code>GPSM=&quot;ordinallogisticReg&quot;</code> for ordinal logistic regression from <code>MASS::polr()</code></li>
+<li>Or, estimated propensity scores can be supplied via the <code>X</code> argument when <code>GPSM=&quot;existing&quot;</code></li>
+</ul>
+<p>In order to ensure sufficient overlap, <a href="https://doi.org/10.1093/biomet/asn055">Crump et al. (2009)</a>’s trimming method can be extended to this setting as well.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># GPSM &lt;- &quot;multinomiallogisticReg&quot; </span>
+GPSM &lt;-<span class="st"> &quot;ordinallogisticReg&quot;</span>
+<span class="co"># GPSM &lt;- &quot;existing&quot; </span>
+
+<span class="kw">set.seed</span>(<span class="dv">123</span>)
+fit1 &lt;-<span class="st"> </span><span class="kw">multilevelGPSMatch</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> covar_matrix,
+  <span class="dt">GPSM =</span> GPSM,
+  <span class="dt">Trimming =</span> <span class="ot">FALSE</span>
+)
+
+<span class="kw">rbind</span>(<span class="dt">Estimate =</span> fit1<span class="op">$</span>tauestimate, <span class="dt">Variance =</span> fit1<span class="op">$</span>varestimate)
+<span class="co">#&gt;          EY(2)-EY(1) EY(3)-EY(1) EY(3)-EY(2)</span>
+<span class="co">#&gt; Estimate   -0.730381   0.3711491   1.1015301</span>
+<span class="co">#&gt; Variance    0.726145   0.5966005   0.9743341</span></code></pre></div>
+</div>
+<div id="using-multimatch-1" class="section level3">
+<h3>Using <code>multiMatch()</code></h3>
+<p>Propensity scores can be estimated with either of the following options - <code>match_on=&quot;multinom&quot;</code> for multinomial logistic regression from <code>nnet::multinom()</code> - <code>match_on=&quot;polr&quot;</code> for ordinal logistic regression from <code>MASS::polr()</code> - Or, estimated propensity scores can be supplied via the <code>X</code> argument when <code>match_on=&quot;existing&quot;</code></p>
+</div>
+<div id="example-ordinal-logistic-regression" class="section level3">
+<h3>Example: ordinal logistic regression</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)
+fit2 &lt;-<span class="st"> </span><span class="kw">multiMatch</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> covar_matrix,
+  <span class="dt">match_on =</span> <span class="st">&quot;polr&quot;</span>,
+  <span class="dt">trimming =</span> <span class="ot">FALSE</span>
+)
+
+<span class="kw">summary</span>(fit2)
+<span class="co">#&gt; ------------- Method arguments --------------</span>
+<span class="co">#&gt; $match_on</span>
+<span class="co">#&gt; [1] &quot;polr&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $model_options</span>
+<span class="co">#&gt; $model_options$reference_level</span>
+<span class="co">#&gt; aa </span>
+<span class="co">#&gt;  1 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $M_matches</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $J_var_matches</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $trt_levels</span>
+<span class="co">#&gt; [1] 1 2 3</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $N_per_trt</span>
+<span class="co">#&gt; W</span>
+<span class="co">#&gt;   1   2   3 </span>
+<span class="co">#&gt; 100 100 100 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ------------- Causal estimates --------------</span>
+<span class="co">#&gt;         Param Trt1 Trt2   Estimate  Variance</span>
+<span class="co">#&gt; 1 EY(2)-EY(1)    1    2 -0.7303810 0.7261450</span>
+<span class="co">#&gt; 2 EY(3)-EY(1)    1    3  0.3711491 0.5966005</span>
+<span class="co">#&gt; 3 EY(3)-EY(2)    2    3  1.1015301 0.9743341</span>
+<span class="co">#&gt; ---------------------------------------------</span></code></pre></div>
+</div>
+<div id="example-multiple-matches-per-observation" class="section level3">
+<h3>Example: multiple matches per observation</h3>
+<p>Users can also specify the number of times each unit is matched to for the estimation (<code>M_matches</code>) and/or variance (<code>J_var_matches</code>) estimation procedures, as per <a href="https://doi.org/10.1111/j.1468-0262.2006.00655.x">Abadie and Imbens (2006)</a>. These are illustrated here:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)
+fit3a &lt;-<span class="st"> </span><span class="kw">multiMatch</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> covar_matrix,
+  <span class="dt">match_on =</span> <span class="st">&quot;multinom&quot;</span>,
+  <span class="dt">J_var_matches =</span> <span class="dv">2</span>,
+  <span class="dt">trimming =</span> <span class="ot">TRUE</span>
+)
+
+<span class="kw">set.seed</span>(<span class="dv">123</span>)
+fit3b &lt;-<span class="st"> </span><span class="kw">multiMatch</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> covar_matrix,
+  <span class="dt">match_on =</span> <span class="st">&quot;multinom&quot;</span>,
+  <span class="dt">M_matches =</span> <span class="dv">3</span>,
+  <span class="dt">J_var_matches =</span> <span class="dv">2</span>,
+  <span class="dt">trimming =</span> <span class="ot">TRUE</span>
+)</code></pre></div>
+<p>Note that the point estimates change between runs</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit3a
+<span class="co">#&gt; -------------- Causal estimates ---------------</span>
+<span class="co">#&gt;         Param Trt1 Trt2  Estimate  Variance VarianceAI2016</span>
+<span class="co">#&gt; 1 EY(2)-EY(1)    1    2 -1.056445 0.8204011      0.5156097</span>
+<span class="co">#&gt; 2 EY(3)-EY(1)    1    3  1.001189 0.3710702      0.1358066</span>
+<span class="co">#&gt; 3 EY(3)-EY(2)    2    3  2.057634 0.8704605      0.5018410</span>
+<span class="co">#&gt; --- Matching on 'multinom' with M=1, J=2 ---</span></code></pre></div>
+<p>as well as the variance estimates:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit3b
+<span class="co">#&gt; -------------- Causal estimates ---------------</span>
+<span class="co">#&gt;         Param Trt1 Trt2   Estimate  Variance VarianceAI2016</span>
+<span class="co">#&gt; 1 EY(2)-EY(1)    1    2 -0.5921172 0.7061781      0.4013867</span>
+<span class="co">#&gt; 2 EY(3)-EY(1)    1    3  0.3871237 0.3475240      0.1122605</span>
+<span class="co">#&gt; 3 EY(3)-EY(2)    2    3  0.9792408 0.7797908      0.4111712</span>
+<span class="co">#&gt; --- Matching on 'multinom' with M=3, J=2 ---</span></code></pre></div>
+<p>The column labeled <code>VarianceAI2016</code> provides the estimated variance per the method described in <a href="https://doi.org/10.3982/ECTA11293">Abadie &amp; Imbens (2016)</a> for when using multinomial logistic regression for GPS estimation.</p>
+</div>
+</div>
+<div id="matching-on-user-supplied-existing-gps" class="section level2">
+<h2>Matching on User-supplied (“existing”) GPS</h2>
+<p>It’s possible to pass in a set of generalized propensity scores to the <code>X</code> argument and match on these values. We demonstrate with some simulated GPS values:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)
+pr_w1 &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dt">x=</span><span class="kw">c</span>(<span class="fl">0.3</span>,<span class="fl">0.5</span>), <span class="dt">replace=</span><span class="ot">TRUE</span>, <span class="dt">size=</span><span class="kw">length</span>(treatment))
+pr_w2 &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>pr_w1)<span class="op">/</span><span class="dv">3</span>
+pr_w3 &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span>(pr_w1<span class="op">+</span>pr_w2)
+existing_GPS_matrix &lt;-<span class="st"> </span><span class="kw">cbind</span>(pr_w1, pr_w2,pr_w3)</code></pre></div>
+<p>Note that each row of GPS values must add to one</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#the following checks are also carried out under the hood</span>
+<span class="kw">nrow</span>(existing_GPS_matrix)<span class="op">==</span><span class="kw">length</span>(treatment)
+<span class="co">#&gt; [1] TRUE</span>
+<span class="kw">ncol</span>(existing_GPS_matrix)<span class="op">==</span><span class="kw">length</span>(<span class="kw">unique</span>(treatment))
+<span class="co">#&gt; [1] TRUE</span>
+<span class="kw">all</span>(<span class="kw">rowSums</span>(existing_GPS_matrix)<span class="op">==</span><span class="dv">1</span>)
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
+<p>Then, estimation can be carried out:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># set.seed(123)</span>
+<span class="co"># fit1 &lt;- multilevelGPSMatch(</span>
+<span class="co">#   Y = outcome,</span>
+<span class="co">#   W = treatment,</span>
+<span class="co">#   X = existing_GPS_matrix,</span>
+<span class="co">#   Trimming = 0,</span>
+<span class="co">#   GPSM = &quot;existing&quot;</span>
+<span class="co"># )</span>
+<span class="kw">set.seed</span>(<span class="dv">123</span>)
+fit2 &lt;-<span class="st"> </span><span class="kw">multiMatch</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> existing_GPS_matrix,
+  <span class="dt">trimming =</span> <span class="dv">0</span>,
+  <span class="dt">match_on =</span> <span class="st">&quot;existing&quot;</span>
+)
+fit2
+<span class="co">#&gt; -------------- Causal estimates ---------------</span>
+<span class="co">#&gt;         Param Trt1 Trt2  Estimate  Variance</span>
+<span class="co">#&gt; 1 EY(2)-EY(1)    1    2 1.0795961 0.8254782</span>
+<span class="co">#&gt; 2 EY(3)-EY(1)    1    3 1.2117705 0.3501697</span>
+<span class="co">#&gt; 3 EY(3)-EY(2)    2    3 0.1321744 0.9920698</span>
+<span class="co">#&gt; --- Matching on 'existing' with M=1, J=1 ---</span></code></pre></div>
+</div>
+<div id="stratification-on-the-gps" class="section level2">
+<h2>Stratification on the GPS</h2>
+<p>The <code>multilevelGPSStratification()</code> function is used to estimate via GPS stratification. There are some additional arguments for using the stratification method:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">NS &lt;-<span class="st"> </span><span class="dv">5</span> ## The number of strata to divide into
+linearp &lt;-<span class="st"> </span><span class="ot">FALSE</span> ## Use subclassification, not linear prediction
+nboot &lt;-<span class="st"> </span><span class="dv">10</span> ## Number of bootstrap samples for variance estimation</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)
+<span class="kw">multilevelGPSStratification</span>(
+  <span class="dt">Y =</span> outcome,
+  <span class="dt">W =</span> treatment,
+  <span class="dt">X =</span> covar_matrix,
+  <span class="dt">GPSM =</span> <span class="st">&quot;multinomiallogisticReg&quot;</span>,
+  <span class="dt">NS =</span> NS,
+  <span class="dt">linearp =</span> linearp,
+  <span class="dt">nboot =</span> nboot
+)
+<span class="co">#&gt; $tauestimate</span>
+<span class="co">#&gt; EY(2)-EY(1) EY(3)-EY(1) EY(3)-EY(2) </span>
+<span class="co">#&gt;  -0.2593016   0.2684324   0.5277340 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $varestimate</span>
+<span class="co">#&gt; EY(2)-EY(1) EY(3)-EY(1) EY(3)-EY(2) </span>
+<span class="co">#&gt;   0.0752562   0.1793161   0.2744478</span></code></pre></div>
+<p>Note that ordinal logistic regression can also be used, or “existing” GPS values can be specified, as in the examples above.</p>
+</div>
+</div>
+<div id="news" class="section level1">
+<h1>News</h1>
+<p>See <a href="https://shuyang1987.github.io/multilevelMatching/news/index.html">the News site</a> for the changelog</p>
+<div id="a-note-on-multimatch" class="section level2">
+<h2>A note on <code>multiMatch()</code></h2>
+<p>The <code>multiMatch()</code> function may return slightly different estimates than the other matching functions in certain circumstances. We attempt to ensure that the functions implement are identical methods up to perhaps random number generation. Please file an issue if you have any questions or concerns.</p>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
